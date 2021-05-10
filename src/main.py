@@ -25,13 +25,11 @@ def find_maximal(data=None):
     return minimal
 
 
-def normalize(data=None, index=None):
+def get_min_and_max(data=None, index=None):
     row = [i for i in zip(*data)][index]
     row = [float(i) for i in row]
-    min_row = min(row)
-    max_row = max(row)
 
-    return (float(row[index]) - min_row) / (max_row - min_row)
+    return min(row), max(row)
 
 
 with open('../datasets/australian.dat') as f:
@@ -46,12 +44,16 @@ results = []
 indexes_to_normalize = [1, 2, 6, 9, 12, 13]
 for row in credit_card_details:
     normalized_row = []
-    for index, _ in enumerate(row):
+    for index, value in enumerate(row):
         if index not in indexes_to_normalize:
             continue
-        normalized = normalize(data=credit_card_details, index=index)
+
+        _min, _max = get_min_and_max(data=credit_card_details, index=index)
+        normalized = (float(value) - _min) / (_max - _min)
         normalized_row.append(normalized)
+
     results.append(normalized_row)
+
 
 Storage = StorageFactory.factory('dat')
 storage = Storage()
